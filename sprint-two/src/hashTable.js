@@ -35,10 +35,11 @@ HashTable.prototype.retrieve = function(k){
   var bucket = this._storage.get(i);
   //iterate inside bucket
   console.log(bucket);
-  debugger;
+  // debugger;
   for(var key = 0;key < bucket.length;key++){
     if (bucket[key][0] === k){
       return bucket[key][1];
+    
     }
   }
   return null;
@@ -58,10 +59,11 @@ HashTable.prototype.remove = function(k){
       bucket.splice(key, 1)
     }
   }
-  if(this._count > 0){this._count};
-  if(this._count < (.25 * this._limit)){
+  if((!this._count - 1)  < 0){this._count--};
+  // console.log(this._count);
+  if((this._limit > 8)  && (this._count < (0.3125 * this._limit))){
     var newLimit = (this._limit / 2);
-
+    console.log(newLimit)
     this.resize(newLimit);
   }
 };
