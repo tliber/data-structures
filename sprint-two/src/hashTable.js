@@ -17,11 +17,14 @@ HashTable.prototype.insert = function(k, v){
   }
 
   this._storage.get(i).push(tup);
+
   this._count++;
+
   if (this._count >= (this._limit * .75)){
-    var newLimit = (this._limit * .75);
+    // console.log(this._limit);
+    var newLimit = (this._limit * 2);
     // this._limit = this._limit * 2;
-    this.resize(this._limit);
+    this.resize(newLimit);
   }
 };
 
@@ -31,6 +34,8 @@ HashTable.prototype.retrieve = function(k){
   //get bucket
   var bucket = this._storage.get(i);
   //iterate inside bucket
+  console.log(bucket);
+  debugger;
   for(var key = 0;key < bucket.length;key++){
     if (bucket[key][0] === k){
       return bucket[key][1];
@@ -44,6 +49,8 @@ HashTable.prototype.remove = function(k){
   //get bucket
   var bucket = this._storage.get(i);
   //iterate bucket
+
+
   for(var key = 0; key < bucket.length;key++){
     //if tuple[0] === k
     if(bucket[key][0] === k){
@@ -51,22 +58,35 @@ HashTable.prototype.remove = function(k){
       bucket.splice(key, 1)
     }
   }
+  if(this._count > 0){this._count};
+  if(this._count < (.25 * this._limit)){
+    var newLimit = (this._limit / 2);
+
+    this.resize(newLimit);
+  }
 };
 HashTable.prototype.resize = function(limit){
 
   // console.log(this._storage);
   var pairCopies = [];
-  this._storage.each(function(value,index,storage){
-    if (value === undefined){return null};
-    for(var k in value){
-      pairCopies.push((value[k]));
+  //push tupples into new pairCopies
+  this._storage.each(function(buck,index,storage){
+    if (buck === undefined){return null};
+    for(var k = 0;k <buck.length;k++){
+      pairCopies.push((buck[k]));
     }
-  })
+  });
+
+  console.log(this._limit);
+
+  this._limit = limit;
   this._storage = LimitedArray(limit);
-  // this._count = 0;
-  for (var pair in pairCopies){
-     var key = pair[0];
-     var val = pair[1];
+
+  this._count = 0;
+
+  for (var l = 0;l < pairCopies.length;l++){
+     var key = pairCopies[l][0];
+     var val = pairCopies[l][1];
      this.insert(key, val);
     }
   // console.log(this._storage.get(0));
